@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Capitais e Estados da Alemanha</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  #game-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+  }
+  h1 {
+    font-size: 24px;
+    margin: 0 0 10px;
+  }
+  p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  select {
+    font-size: 16px;
+    padding: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  button {
+    font-size: 16px;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  button:hover {
+    background-color: #005BB5;
+  }
+  #result {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <h1>Jogo de Capitais e Estados da Alemanha</h1>
+  <p>Criado por João Paulo.</p>
+  <div class="question" id="question-text"></div>
+  <select id="answer-input"></select>
+  <button id="submit-button">Verificar</button>
+  <div id="result"></div>
+  <button id="shuffle-button">Embaralhar e Jogar Novamente</button>
+</div>
+
+<script>
+const stateCapitalPairs = [
+  { capital: 'Stuttgart', state: 'Baden-Württemberg' },
+  { capital: 'Berlin', state: 'Berlin' },
+  { capital: 'Wiesbaden', state: 'Hessen' },
+  { capital: 'Hannover', state: 'Niedersachsen' },
+  { capital: 'Dresden', state: 'Sachsen' },
+  { capital: 'Saarbrücken', state: 'Saarland' },
+  { capital: 'Bremen', state: 'Bremen' },
+  { capital: 'Erfurt', state: 'Thüringen' },
+  { capital: 'Kiel', state: 'Schleswig-Holstein' },
+  { capital: 'Magdeburg', state: 'Sachsen-Anhalt' },
+  { capital: 'Düsseldorf', state: 'Nordhein-Westfalen' },
+  { capital: 'München', state: 'Bayern' },
+  { capital: 'Schwerin', state: 'Mecklenburg-Vorpommern' },
+  { capital: 'Mainz', state: 'Rheinland-Pfalz' },
+  { capital: 'Hamburg', state: 'Hamburg' },
+  { capital: 'Potsdam', state: 'Brandenburg' },
+];
+
+const questionText = document.getElementById('question-text');
+const answerInput = document.getElementById('answer-input');
+const submitButton = document.getElementById('submit-button');
+const result = document.getElementById('result');
+const shuffleButton = document.getElementById('shuffle-button');
+
+let currentQuestionType = '';
+let currentPairIndex = 0;
+
+function updateQuestion() {
+  const questionType = Math.random() < 0.5 ? 'capital' : 'state';
+  currentQuestionType = questionType;
+  
+  if (questionType === 'capital') {
+    currentPairIndex = Math.floor(Math.random() * stateCapitalPairs.length);
+    questionText.textContent = `Qual é a capital do estado de ${stateCapitalPairs[currentPairIndex].state}?`;
+    populateAnswerOptions('capital');
+  } else {
+    currentPairIndex = Math.floor(Math.random() * stateCapitalPairs.length);
+    questionText.textContent = `Qual é o estado da capital ${stateCapitalPairs[currentPairIndex].capital}?`;
+    populateAnswerOptions('state');
+  }
+
+  result.textContent = '';
+}
+
+function populateAnswerOptions(type) {
+  answerInput.innerHTML = '';
+
+  if (type === 'capital') {
+    stateCapitalPairs.forEach((pair, index) => {
+      const option = document.createElement('option');
+      option.value = pair.capital;
+      option.text = pair.capital;
+      answerInput.appendChild(option);
+    });
+  } else {
+    stateCapitalPairs.forEach((pair, index) => {
+      const option = document.createElement('option');
+      option.value = pair.state;
+      option.text = pair.state;
+      answerInput.appendChild(option);
+    });
+  }
+}
+
+function checkAnswer() {
+  const selectedAnswer = answerInput.value.trim();
+  const correctAnswer = currentQuestionType === 'capital' ? stateCapitalPairs[currentPairIndex].capital : stateCapitalPairs[currentPairIndex].state;
+
+  if (selectedAnswer === correctAnswer) {
+    result.textContent = 'Resposta correta!';
+  } else {
+    result.textContent = `Resposta incorreta. A resposta correta é ${correctAnswer}.`;
+  }
+}
+
+function shuffleQuestions() {
+  stateCapitalPairs.sort(() => Math.random() - 0.5);
+  updateQuestion();
+}
+
+submitButton.addEventListener('click', checkAnswer);
+shuffleButton.addEventListener('click', shuffleQuestions);
+
+shuffleQuestions(); // Inicialização do jogo
+</script>
+</body>
+</html>
